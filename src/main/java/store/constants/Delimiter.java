@@ -1,5 +1,8 @@
 package store.constants;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Delimiter {
     COMMA(",");
 
@@ -9,7 +12,7 @@ public enum Delimiter {
         this.delimiter = delimiter;
     }
 
-    public String getDelimiter() {
-        return delimiter;
+    public List<String> splitDelimiter(String input) {
+        return Arrays.asList(input.split(delimiter));
     }
 }
