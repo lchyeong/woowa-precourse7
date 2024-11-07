@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 
 class FileUtilTest {
 
-    private final String mockColumns = "name,buy,get,start_date,end_date";
-    private final String mockValues = "John,100,50,2023-11-01,2023-11-10";
-
     private final FileUtil fileUtil = new FileUtil();
 
     private Map<String, String> getMapAddedKeys() {
@@ -37,24 +34,22 @@ class FileUtilTest {
     @Test
     @DisplayName("구분자를 기준으로 맵을 생성해 키값을 세팅")
     public void 맵에_키값_세팅() throws Exception {
-        //given
         Map<String, String> expected = getMapAddedKeys();
-        //when
+
+        String mockColumns = "name,buy,get,start_date,end_date";
         Map<String, String> actual = fileUtil.addKeysFromResource(mockColumns);
-        //then
+
         assertEquals(expected, actual);
     }
 
     @Test
-    @DisplayName("맵에 값을 세팅")
-    public void 맵에_값_설정() throws Exception {
-        // given
+    @DisplayName("구분자를 기준으로 맵에 값을 세팅")
+    public void 맵에_값_세팅() throws Exception {
         Map<String, String> expected = getMapAddedValues();
 
-        // when
+        String mockValues = "John,100,50,2023-11-01,2023-11-10";
         Map<String, String> actual = fileUtil.setValues(getMapAddedKeys(), mockValues);
 
-        // then
         assertEquals(expected, actual);
     }
 }
