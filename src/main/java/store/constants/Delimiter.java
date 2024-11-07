@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum Delimiter {
-    COMMA(",");
+    COMMA(","),
+    LINE_FEED("\n");
 
     private final String delimiter;
 
