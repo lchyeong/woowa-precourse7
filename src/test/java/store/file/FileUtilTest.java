@@ -48,7 +48,7 @@ class FileUtilTest {
         Map<String, String> expected = getMapAddedValues();
 
         String mockValues = "John,100,50,2023-11-01,2023-11-10";
-        Map<String, String> actual = fileUtil.setValues(getMapAddedKeys(), mockValues);
+        Map<String, String> actual = fileUtil.addValuesToKeys(getMapAddedKeys(), mockValues);
 
         assertEquals(expected, actual);
     }

@@ -7,25 +7,25 @@ import store.constants.Delimiter;
 
 public class FileUtil {
 
-    public Map<String, String> addKeysFromResource(String resource) {
+    public static Map<String, String> addKeysFromResource(String resource) {
         List<String> columns = Delimiter.COMMA.splitDelimiter(resource);
-        Map<String, String> result = new LinkedHashMap<>();
+        Map<String, String> headLine = new LinkedHashMap<>();
         for (String column : columns) {
-            result.put(column, "");
+            headLine.put(column, "");
         }
-        return result;
+        return headLine;
     }
 
-    public Map<String, String> setValues(Map<String, String> input, String values) {
+    public static Map<String, String> addValuesToKeys(Map<String, String> headLine, String values) {
 
         int i = 0;
         List<String> splitValues = Delimiter.COMMA.splitDelimiter(values);
-        for (String key : input.keySet()) {
+        for (String key : headLine.keySet()) {
             if (i < splitValues.size()) {
-                input.put(key, splitValues.get(i));
+                headLine.put(key, splitValues.get(i));
                 i++;
             }
         }
-        return input;
+        return headLine;
     }
 }
