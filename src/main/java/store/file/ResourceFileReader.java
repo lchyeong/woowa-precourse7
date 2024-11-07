@@ -17,7 +17,7 @@ public class ResourceFileReader {
         }
     }
 
-    public StringBuilder readAllLines(String filename) {
+    public String readAllLines(String filename) {
         try {
             BufferedReader bufferedReader = new BufferedReader(internalInputStream(filename));
             StringBuilder stringBuilder = new StringBuilder();
@@ -25,7 +25,7 @@ public class ResourceFileReader {
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line).append("\n");
             }
-            return stringBuilder;
+            return stringBuilder.toString();
         } catch (IOException e) {
             throw new ApiException(ErrorCode.FILE_IS_EMPTY);
         }
