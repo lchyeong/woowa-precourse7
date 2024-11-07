@@ -1,6 +1,8 @@
 package store.file;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static store.file.FileUtil.addKeysFromResource;
+import static store.file.FileUtil.addValuesToKeys;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FileUtilTest {
-
-    private final FileUtil fileUtil = new FileUtil();
 
     private Map<String, String> getMapAddedKeys() {
         Map<String, String> result = new LinkedHashMap<>();
@@ -33,22 +33,22 @@ class FileUtilTest {
 
     @Test
     @DisplayName("구분자를 기준으로 맵을 생성해 키값을 세팅")
-    public void 맵에_키값_세팅() throws Exception {
+    public void 맵에_키_세팅() {
         Map<String, String> expected = getMapAddedKeys();
 
         String mockColumns = "name,buy,get,start_date,end_date";
-        Map<String, String> actual = fileUtil.addKeysFromResource(mockColumns);
+        Map<String, String> actual = addKeysFromResource(mockColumns);
 
         assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("구분자를 기준으로 맵에 값을 세팅")
-    public void 맵에_값_세팅() throws Exception {
+    public void 맵에_값_세팅() {
         Map<String, String> expected = getMapAddedValues();
 
         String mockValues = "John,100,50,2023-11-01,2023-11-10";
-        Map<String, String> actual = fileUtil.addValuesToKeys(getMapAddedKeys(), mockValues);
+        Map<String, String> actual = addValuesToKeys(getMapAddedKeys(), mockValues);
 
         assertEquals(expected, actual);
     }
