@@ -1,8 +1,8 @@
 package store.file;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static store.file.FileUtil.addKeysFromResource;
-import static store.file.FileUtil.addValuesToKeys;
+import static store.util.FileUtil.addKeysFromResource;
+import static store.util.FileUtil.addValuesToKeys;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
