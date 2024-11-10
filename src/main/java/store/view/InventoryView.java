@@ -1,25 +1,32 @@
 package store.view;
 
 import java.util.List;
-import store.product.entity.Product;
+import store.entity.Product;
 
 public class InventoryView {
 
-    public void showWelcomePhrase() {
+    public static void showWelcomePhrase() {
         System.out.println("안녕하세요. 우아24시 편의점입니다.\n현재 보유하고 있는 상품입니다.\n");
     }
 
-    public void showInventory(List<Product> products) {
+    public static void showInventory(List<Product> products) {
         StringBuilder sb = new StringBuilder();
         for (Product product : products) {
             sb.append(
-                    String.format("- %s %,d원 %,d개 %s%n",
+                    String.format("- %s %,d원 %s %s%n",
                             product.getName(),
                             product.getPrice(),
-                            product.getQuantity(),
-                            product.getPromotion())
+                            checkQuantity(product.getQuantity()),
+                            product.getPromotionName())
             );
         }
         System.out.println(sb);
+    }
+
+    private static String checkQuantity(int quantity) {
+        if (quantity == 0) {
+            return "재고 없음";
+        }
+        return String.valueOf(quantity) + "개";
     }
 }
