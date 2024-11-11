@@ -28,7 +28,7 @@ class ProductRepositoryTest {
 
     @Test
     void findAll() {
-        assertEquals(16, productRepository.findAll().size());
+        assertEquals(18, productRepository.findAll().size());
     }
 
     @Test

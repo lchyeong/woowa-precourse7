@@ -16,7 +16,7 @@ import store.repository.PromotionRepository;
 class DataInitializerTest {
     private DataInitializer dataInitializer;
     private ResourceFileReader resourceFileReader = new ResourceFileReader();
-    int productAmount = 16;
+    int productAmount = 18;
     int promotionAmount = 3;
 
 
