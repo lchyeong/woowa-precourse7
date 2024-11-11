@@ -65,6 +65,6 @@ public class ProductService {
         if (promotionProduct.getQuantity() < purchaseQuantity) {
             return purchaseQuantity - ((purchaseQuantity / (buy + get)) * (buy + get));
         }
-        throw new IllegalArgumentException("여기 일단 에러 나오면 productService임");
+        return 0;
     }
 }
