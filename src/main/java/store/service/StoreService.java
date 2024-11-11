@@ -101,10 +101,10 @@ public class StoreService {
             }
 
             if (purchaseQuantity > promotionProduct.getQuantity()) {
-                freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
+                freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
             }
             if (purchaseQuantity < promotionProduct.getQuantity()) {
-                freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+                freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
             }
 
             promotionDiscount += freeItems * promotionProduct.getPrice();
