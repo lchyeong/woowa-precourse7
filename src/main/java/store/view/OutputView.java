@@ -25,7 +25,7 @@ public class OutputView {
 
 
     private void printReceiptStoreName() {
-        System.out.println("============우아24시 편의점==============");
+        System.out.println("\n============우아24시 편의점==============");
         System.out.println("상품명\t\t수량\t금액");
     }
 
@@ -50,7 +50,7 @@ public class OutputView {
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
             if (promotionProduct != null) {
-                int freeItemQuantity = productService.getAdditionalFreeItems(promotionProduct, purchaseQuantity);
+                int freeItemQuantity = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
                 if (freeItemQuantity > 0) {
                     System.out.printf("%s\t\t%d%n", productName, freeItemQuantity);
                 }
