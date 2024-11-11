@@ -14,7 +14,7 @@ public class ProductService {
         int remainQuantity = handlePromotionStock(productName, purchaseQuantity);
         handleRegularStock(productName, remainQuantity);
     }
-    
+
     public int handlePromotionStock(String productName, int purchaseQuantity) {
         int remainQuantity = purchaseQuantity;
 
@@ -50,5 +50,11 @@ public class ProductService {
     public int totalPurchaseItems(Product promotionProduct, int purchaseQuantity) {
         return getFreeItems(promotionProduct, purchaseQuantity) + getRealPurchaseItems(promotionProduct,
                 purchaseQuantity);
+    }
+
+    public int getNonPromotionItemsCost(Product promotionProduct, int purchaseQuantity) {
+        return promotionProduct.getPrice()
+                * (promotionProduct.getQuantity()
+                - totalPurchaseItems(promotionProduct, purchaseQuantity));
     }
 }

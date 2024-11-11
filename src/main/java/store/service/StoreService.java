@@ -84,7 +84,7 @@ public class StoreService {
     }
 
     public int calculateMemberShipCost(Map<String, Integer> parseInput) {
-        int nonPromotionTotal = 0;
+        int nonPromotionCost = 0;
 
         for (Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
@@ -93,11 +93,26 @@ public class StoreService {
             Product product = productRepository.findProductByName(productName);
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
-            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)) {
-                nonPromotionTotal += product.getPrice() * purchaseQuantity;
+            if (promotionProduct != null) {
+                if (purchaseQuantity > promotionProduct.getQuantity()) {
+                    nonPromotionCost += productService.getNonPromotionItemsCost(promotionProduct, purchaseQuantity);
+                }
+                if (purchaseQuantity < promotionProduct.getQuantity()
+                        || purchaseQuantity == promotionProduct.getQuantity()) {
+                    continue;
+                }
             }
+
+            if (promotionProduct == null) {
+                nonPromotionCost +=
+                        product.getPrice() * purchaseQuantity;
+                continue;
+            }
+            nonPromotionCost +=
+                    product.getPrice() * productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
+
         }
-        return membershipService.calculateMembershipDiscount(nonPromotionTotal);
+        return membershipService.calculateMembershipDiscount(nonPromotionCost);
     }
 
 
