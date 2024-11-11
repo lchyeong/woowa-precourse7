@@ -25,10 +25,9 @@ public class OutputView {
         printReceiptFooter(totalCost, totalQuantity, promotionDiscount, membershipDiscount);
     }
 
-
     private void printReceiptStoreName() {
-        System.out.println("\n============w 편의점==============");
-        System.out.println("상품명\t\t수량\t금액");
+        System.out.println("\n==============W 편의점===============");
+        System.out.printf("%-10s %8s %12s%n", "상품명", "수량", "금액");
     }
 
     private void printPurchaseItems(Map<String, Integer> parseInput) {
@@ -39,13 +38,13 @@ public class OutputView {
 
             if (product != null) {
                 int productCost = product.getPrice() * purchaseQuantity;
-                System.out.printf("%s\t\t%d\t%,d%n", productName, purchaseQuantity, productCost);
+                System.out.printf("%-10s %8d %12s%n", productName, purchaseQuantity, String.format("%,d", productCost));
             }
         }
     }
 
     public void printFreeItems(Map<String, Integer> parseInput) {
-        System.out.println("=============증    정===============");
+        System.out.println("=============증     정==============");
         for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
@@ -60,23 +59,24 @@ public class OutputView {
                 continue;
             }
             if (purchaseQuantity > promotionProduct.getQuantity()) {
-                System.out.printf("%s\t\t%d%n", productName, promoQuantity);
+                System.out.printf("%-10s %8d%n", productName, promoQuantity);
                 continue;
             }
 
             int freeItemQuantity = productService.getFreeItems(promotionProduct, purchaseQuantity);
             if (freeItemQuantity > 0) {
-                System.out.printf("%s\t\t%d%n", productName, freeItemQuantity);
+                System.out.printf("%-10s %8d%n", productName, freeItemQuantity);
             }
         }
     }
 
     public void printReceiptFooter(int totalCost, int totalQuantity, int promotionDiscount, int membershipDiscount) {
-        System.out.println("====================================");
-        System.out.printf("총구매액\t\t%,d\t%,d%n", totalQuantity, totalCost);
-        System.out.printf("행사할인\t\t\t-%,d%n", promotionDiscount);
-        System.out.printf("멤버십할인\t\t\t-%,d%n", membershipDiscount);
-        System.out.printf("내실돈\t\t\t%,d%n", totalCost - promotionDiscount - membershipDiscount);
+        System.out.println("===================================");
+        System.out.printf("%-10s %8d %12s%n", "총구매액", totalQuantity, String.format("%,d", totalCost));
+        System.out.printf("%-10s %20s%n", "행사할인", String.format("-%,d", promotionDiscount));
+        System.out.printf("%-10s %20s%n", "멤버십할인", String.format("-%,d", membershipDiscount));
+        System.out.printf("%-10s %20s%n", "내실돈",
+                String.format("%,d", totalCost - promotionDiscount - membershipDiscount));
     }
 
     private int calculateTotalQuantity(Map<String, Integer> parseInput) {
