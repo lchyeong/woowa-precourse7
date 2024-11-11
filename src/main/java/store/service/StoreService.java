@@ -34,7 +34,7 @@ public class StoreService {
         this.outputView = outputView;
     }
 
-    private int membershipDiscount;
+    private int membershipDiscount = 0;
 
     public void welcome() {
         InventoryView.showWelcomePhrase();
@@ -54,7 +54,6 @@ public class StoreService {
 
         int promotionDiscount = calculatePromotionDiscount(parseInput);
         input = inputViewService.applyMembershipDiscount();
-
         if (input.equals("Y") || input.equals("y")) {
             membershipDiscount = membershipService.calculateMembershipDiscount(totalCost - promotionDiscount);
         }
