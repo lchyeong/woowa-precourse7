@@ -1,7 +1,9 @@
 package store.service;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import store.entity.Product;
+import store.exception.ApiException;
 import store.repository.ProductRepository;
 import store.util.PurchaseProductParser;
 import store.validator.DateValidator;
@@ -41,7 +43,12 @@ public class StoreService {
         String input = inputViewService.purchaseProduct();
         Map<String, Integer> parseInput = purchaseProductParser.parsePurchaseInput(input);
 
-        parseInput = inputViewService.checkPromotion(parseInput);
+        try {
+            parseInput = inputViewService.checkPromotion(parseInput);
+        } catch (ApiException e) {
+            welcome();
+            return;
+        }
 
         int totalCost = calculateTotalCost(parseInput);
 
@@ -59,13 +66,12 @@ public class StoreService {
         if (input.equals("Y") || input.equals("y")) {
             welcome();
         }
-
     }
 
     public int calculateTotalCost(Map<String, Integer> parseInput) {
         int totalCost = 0;
 
-        for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
+        for (Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
 
@@ -78,17 +84,28 @@ public class StoreService {
 
     public int calculatePromotionDiscount(Map<String, Integer> parseInput) {
         int promotionDiscount = 0;
-        for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
+        for (Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
+            int freeItems = 0;
 
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
             if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)) {
                 continue;
             }
+            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
 
-            int freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
+            if (promoQuantity == 0) {
+                continue;
+            }
+
+            if (purchaseQuantity > promotionProduct.getQuantity()) {
+                freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
+            }
+            if (purchaseQuantity < promotionProduct.getQuantity()) {
+                freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+            }
 
             promotionDiscount += freeItems * promotionProduct.getPrice();
         }
@@ -96,7 +113,7 @@ public class StoreService {
     }
 
     public void updateStock(Map<String, Integer> parseInput) {
-        for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
+        for (Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
 

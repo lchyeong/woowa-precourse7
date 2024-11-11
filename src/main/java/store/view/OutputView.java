@@ -49,11 +49,19 @@ public class OutputView {
             int purchaseQuantity = entry.getValue();
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
-            if (promotionProduct != null) {
-                int freeItemQuantity = productService.getFreeItems(promotionProduct, purchaseQuantity);
-                if (freeItemQuantity > 0) {
-                    System.out.printf("%s\t\t%d%n", productName, freeItemQuantity);
-                }
+            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+
+            if (promoQuantity == 0) {
+                continue;
+            }
+            if (purchaseQuantity > promotionProduct.getQuantity()) {
+                System.out.printf("%s\t\t%d%n", productName, promoQuantity);
+                continue;
+            }
+
+            int freeItemQuantity = productService.getFreeItems(promotionProduct, purchaseQuantity);
+            if (freeItemQuantity > 0) {
+                System.out.printf("%s\t\t%d%n", productName, freeItemQuantity);
             }
         }
     }
