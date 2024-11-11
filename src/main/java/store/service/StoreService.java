@@ -94,13 +94,15 @@ public class StoreService {
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
             if (promotionProduct != null) {
-                if (purchaseQuantity > promotionProduct.getQuantity()) {
-                    nonPromotionCost += productService.getNonPromotionItemsCost(promotionProduct, purchaseQuantity);
-                }
-                if (purchaseQuantity < promotionProduct.getQuantity()
-                        || purchaseQuantity == promotionProduct.getQuantity()) {
-                    continue;
-                }
+                continue;
+//                if (purchaseQuantity > promotionProduct.getQuantity()) {
+//
+//                    nonPromotionCost += productService.getNonPromotionItemsCost(promotionProduct, purchaseQuantity);
+//                }
+//                if (purchaseQuantity < promotionProduct.getQuantity()
+//                        || purchaseQuantity == promotionProduct.getQuantity()) {
+//                    continue;
+//                }
             }
 
             if (promotionProduct == null) {
