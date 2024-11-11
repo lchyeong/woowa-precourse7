@@ -54,8 +54,9 @@ public class StoreService {
 
         int promotionDiscount = calculatePromotionDiscount(parseInput);
         input = inputViewService.applyMembershipDiscount();
+
         if (input.equals("Y") || input.equals("y")) {
-            membershipDiscount = membershipService.calculateMembershipDiscount(totalCost - promotionDiscount);
+            membershipDiscount = membershipService.calculateMembershipDiscount(totalCost);
         }
 
         outputView.printReceipt(parseInput, totalCost, promotionDiscount, membershipDiscount);
