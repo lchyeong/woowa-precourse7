@@ -1,12 +1,10 @@
 package store.service;
 
-import camp.nextstep.edu.missionutils.DateTimes;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 import store.entity.Product;
 import store.exception.ApiException;
 import store.repository.ProductRepository;
+import store.validator.DateValidator;
 import store.validator.PurchaseValidator;
 import store.validator.YesNoValidator;
 import store.view.InputView;
@@ -71,41 +69,45 @@ public class InputViewService {
         return input;
     }
 
-    public String checkPromotion(Map<String, Integer> parseInput) {
-        LocalDateTime now = DateTimes.now();
-        LocalDate currentDate = now.toLocalDate();
+    //todo 리펙토링 필요 ㅠㅠ....
+    public Map<String, Integer> checkPromotion(Map<String, Integer> parseInput) {
         for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
 
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
-            int freeItemQuantity = productService.getAdditionalFreeItems(promotionProduct, purchaseQuantity);
-
-            if (promotionProduct == null) {
-                continue;
-            }
-            LocalDate startDate = promotionProduct.getPromotion().getStartDate().toLocalDate();
-            LocalDate endDate = promotionProduct.getPromotion().getEndDate().toLocalDate();
-
-            if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)
+                    || promotionProduct.getPromotion() == null) {
                 continue;
             }
 
-            if (promotionProduct.getPromotion() != null && freeItemQuantity == promotionProduct.getPromotion()
-                    .getGet()) {
-                input = validateFreeItem(promotionProduct, freeItemQuantity);
+            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+            int totalQuantity = productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
+
+            if (promotionProduct.getQuantity() == purchaseQuantity) {
+                continue;
+            }
+            //이때 수량 재세팅해야함
+            if (promotionProduct.getQuantity() > purchaseQuantity) {
+                if (purchaseQuantity - totalQuantity == promotionProduct.getPromotion().getBuy()) {
+                    input = validateFreeItem(productName, promotionProduct.getPromotion().getGet());
+                    if (input.equals("Y") || input.equals("y")) {
+                        parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
+                    }
+                }
             }
             if (promotionProduct.getQuantity() < purchaseQuantity) {
-                input = validateFreeItemSoldOut(promotionProduct, freeItemQuantity);
+                int soldOutItems = purchaseQuantity - promoQuantity;
+                input = validateFreeItemSoldOut(productName, soldOutItems);
             }
         }
-        return input;
+        return parseInput;
     }
 
-    private String validateFreeItem(Product promotionProduct, int freeItemQuantity) {
+    private String validateFreeItem(String productName, int freeItemQuantity) {
         do {
             try {
-                input = InputView.promptCheckPromotion(promotionProduct, freeItemQuantity);
+                input = InputView.promptCheckPromotion(productName, freeItemQuantity);
                 pass = purchaseValidator.isEmptyInput(input);
                 pass = yesNoValidator.isYesOrNo(input);
             } catch (ApiException e) {
@@ -116,10 +118,10 @@ public class InputViewService {
         return input;
     }
 
-    private String validateFreeItemSoldOut(Product promotionProduct, int freeItemQuantity) {
+    private String validateFreeItemSoldOut(String productName, int freeItemQuantity) {
         do {
             try {
-                input = InputView.promptSoldOutPromotion(promotionProduct, freeItemQuantity);
+                input = InputView.promptSoldOutPromotion(productName, freeItemQuantity);
                 pass = purchaseValidator.isEmptyInput(input);
                 pass = yesNoValidator.isYesOrNo(input);
             } catch (ApiException e) {

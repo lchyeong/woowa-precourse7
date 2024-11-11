@@ -1,7 +1,6 @@
 package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
-import store.entity.Product;
 
 public class InputView {
 
@@ -20,31 +19,31 @@ public class InputView {
         return Console.readLine();
     }
 
-    public static String promptCheckPromotion(Product promotionProduct, int freeItemQuantity) {
-        System.out.println(buildPromptCheckPromotion(promotionProduct, freeItemQuantity));
+    public static String promptCheckPromotion(String productName, int freeItemQuantity) {
+        System.out.println(buildPromptCheckPromotion(productName, freeItemQuantity));
         return Console.readLine();
     }
 
-    public static String promptSoldOutPromotion(Product promotionProduct, int freeItemQuantity) {
-        System.out.println(buildPromptSoldOutPromotion(promotionProduct, freeItemQuantity));
+    public static String promptSoldOutPromotion(String productName, int freeItemQuantity) {
+        System.out.println(buildPromptSoldOutPromotion(productName, freeItemQuantity));
         return Console.readLine();
     }
 
-    private static StringBuilder buildPromptCheckPromotion(Product promotionProduct, int freeItemQuantity) {
+    private static StringBuilder buildPromptCheckPromotion(String productName, int freeItemQuantity) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
-                String.format("현재 %s은(는) %,d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)",
-                        promotionProduct.getName(),
+                String.format("\n현재 %s은(는) %,d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)",
+                        productName,
                         freeItemQuantity
                 ));
         return stringBuilder;
     }
 
-    private static StringBuilder buildPromptSoldOutPromotion(Product promotionProduct, int freeItemQuantity) {
+    private static StringBuilder buildPromptSoldOutPromotion(String productName, int freeItemQuantity) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
-                String.format("현재 %s %,d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)",
-                        promotionProduct.getName(),
+                String.format("\n현재 %s %,d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)",
+                        productName,
                         freeItemQuantity
                 ));
         return stringBuilder;
