@@ -18,15 +18,16 @@ public class OutputView {
 
     public void printReceipt(Map<String, Integer> parseInput, int totalCost, int promotionDiscount,
                              int membershipDiscount) {
+        int totalQuantity = calculateTotalQuantity(parseInput);
         printReceiptStoreName();
         printPurchaseItems(parseInput);
         printFreeItems(parseInput);
-        printReceiptFooter(totalCost, promotionDiscount, membershipDiscount);
+        printReceiptFooter(totalCost, totalQuantity, promotionDiscount, membershipDiscount);
     }
 
 
     private void printReceiptStoreName() {
-        System.out.println("\n============우아24시 편의점==============");
+        System.out.println("\n============w 편의점==============");
         System.out.println("상품명\t\t수량\t금액");
     }
 
@@ -70,11 +71,20 @@ public class OutputView {
         }
     }
 
-    public void printReceiptFooter(int totalCost, int promotionDiscount, int membershipDiscount) {
+    public void printReceiptFooter(int totalCost, int totalQuantity, int promotionDiscount, int membershipDiscount) {
         System.out.println("====================================");
-        System.out.printf("총구매액\t\t\t%,d%n", totalCost);
+        System.out.printf("총구매액\t\t%,d\t%,d%n", totalQuantity, totalCost);
         System.out.printf("행사할인\t\t\t-%,d%n", promotionDiscount);
         System.out.printf("멤버십할인\t\t\t-%,d%n", membershipDiscount);
         System.out.printf("내실돈\t\t\t%,d%n", totalCost - promotionDiscount - membershipDiscount);
+    }
+
+    private int calculateTotalQuantity(Map<String, Integer> parseInput) {
+        int totalQuantity = 0;
+        for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
+            int purchaseQuantity = entry.getValue();
+            totalQuantity += purchaseQuantity;
+        }
+        return totalQuantity;
     }
 }
