@@ -1,7 +1,9 @@
 package store.validator;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import store.constants.Delimiter;
 import store.exception.ApiException;
 import store.exception.ErrorCode;
 import store.repository.ProductRepository;
@@ -29,13 +31,22 @@ public class PurchaseValidator {
     }
 
     public boolean checkPurchaseProductNameAndAmount(String input) {
-        Matcher matcher = ONE_PURCHASE_PATTERN.matcher(removeSpace(input));
-        while (matcher.find()) {
-            if (!checkProductName(matcher.group(1))) {
-                throw new ApiException(ErrorCode.NOT_FOUND_PRODUCT_NAME);
-            }
-            if (checkProductQuantity(matcher.group(1)) < extractNumber(matcher.group(2))) {
-                throw new ApiException(ErrorCode.LACK_OF_QUANTITY);
+        List<String> items = Delimiter.COMMA.splitDelimiter(removeSpace(input));
+
+        for (String item : items) {
+            Matcher oneMatcher = PurchaseValidator.ONE_PURCHASE_PATTERN.matcher(item);
+
+            if (oneMatcher.matches()) {
+                String productName = oneMatcher.group(1);
+                int quantity = extractNumber(oneMatcher.group(2));
+
+                if (!checkProductName(productName)) {
+                    throw new ApiException(ErrorCode.NOT_FOUND_PRODUCT_NAME);
+                }
+
+                if (checkProductQuantity(productName) < quantity) {
+                    throw new ApiException(ErrorCode.LACK_OF_QUANTITY);
+                }
             }
         }
         return true;
