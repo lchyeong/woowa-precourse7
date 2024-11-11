@@ -6,7 +6,7 @@ import store.entity.Product;
 public class InventoryView {
 
     public static void showWelcomePhrase() {
-        System.out.println("안녕하세요. 우아24시 편의점입니다.\n현재 보유하고 있는 상품입니다.\n");
+        System.out.println("안녕하세요. w편의점입니다.\n현재 보유하고 있는 상품입니다.\n");
     }
 
     public static void showInventory(List<Product> products) {
