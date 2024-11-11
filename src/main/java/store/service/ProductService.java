@@ -51,4 +51,10 @@ public class ProductService {
         return getFreeItems(promotionProduct, purchaseQuantity) + getRealPurchaseItems(promotionProduct,
                 purchaseQuantity);
     }
+
+    public int getFreeItemPercent(Product promotionProduct, int purchaseQuantity) {
+        int buy = promotionProduct.getPromotion().getBuy();
+        int get = promotionProduct.getPromotion().getGet();
+        return purchaseQuantity % (buy + get);
+    }
 }

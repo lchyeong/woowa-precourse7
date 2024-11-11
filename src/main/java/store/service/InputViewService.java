@@ -85,7 +85,14 @@ public class InputViewService {
             int totalQuantity = productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
 
             if (promotionProduct.getQuantity() == purchaseQuantity) {
-                continue;
+                if (promoQuantity == 0) {
+                    continue;
+                }
+                int soldOutItems = purchaseQuantity - promoQuantity;
+                input = validateFreeItemSoldOut(productName, soldOutItems);
+                if (input.equals("N") || input.equals("n")) {
+                    throw new ApiException(ErrorCode.REJECT_PROMOTION);
+                }
             }
 
             if (promotionProduct.getQuantity() > purchaseQuantity) {
@@ -99,6 +106,7 @@ public class InputViewService {
                     }
                 }
             }
+
             if (promotionProduct.getQuantity() < purchaseQuantity) {
                 if (promoQuantity == 0) {
                     continue;
