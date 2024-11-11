@@ -3,7 +3,6 @@ package store.service;
 import java.util.Map;
 import store.entity.Product;
 import store.exception.ApiException;
-import store.exception.ErrorCode;
 import store.repository.ProductRepository;
 import store.validator.DateValidator;
 import store.validator.PurchaseValidator;
@@ -91,7 +90,8 @@ public class InputViewService {
                 int soldOutItems = purchaseQuantity - promoQuantity;
                 input = validateFreeItemSoldOut(productName, soldOutItems);
                 if (input.equals("N") || input.equals("n")) {
-                    throw new ApiException(ErrorCode.REJECT_PROMOTION);
+                    parseInput.remove(productName);
+                    return parseInput;
                 }
             }
 
@@ -114,7 +114,8 @@ public class InputViewService {
                 int soldOutItems = purchaseQuantity - promoQuantity;
                 input = validateFreeItemSoldOut(productName, soldOutItems);
                 if (input.equals("N") || input.equals("n")) {
-                    throw new ApiException(ErrorCode.REJECT_PROMOTION);
+                    parseInput.remove(productName);
+                    return parseInput;
                 }
             }
         }
