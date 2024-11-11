@@ -4,6 +4,7 @@ import java.util.Map;
 import store.entity.Product;
 import store.repository.ProductRepository;
 import store.service.ProductService;
+import store.validator.DateValidator;
 
 public class OutputView {
 
@@ -48,6 +49,9 @@ public class OutputView {
             String productName = entry.getKey();
             int purchaseQuantity = entry.getValue();
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
+            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)) {
+                continue;
+            }
 
             int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
 
