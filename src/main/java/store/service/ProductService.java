@@ -57,4 +57,10 @@ public class ProductService {
         int get = promotionProduct.getPromotion().getGet();
         return purchaseQuantity % (buy + get);
     }
+
+    public int getBuyPlusGet(Product promotionProduct) {
+        int buy = promotionProduct.getPromotion().getBuy();
+        int get = promotionProduct.getPromotion().getGet();
+        return buy + get;
+    }
 }

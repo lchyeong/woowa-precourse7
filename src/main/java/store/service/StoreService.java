@@ -51,10 +51,11 @@ public class StoreService {
 
         int promotionDiscount = calculatePromotionDiscount(parseInput);
         input = inputViewService.applyMembershipDiscount();
-        if (input.equals("Y") || input.equals("y")) {
-            membershipDiscount = membershipService.calculateMembershipDiscount(totalCost - promotionDiscount);
-        }
 
+        if (input.equals("Y") || input.equals("y")) {
+            membershipDiscount = membershipService.calculateMembershipDiscount(
+                    totalCost - calculateMembershipDiscount(parseInput));
+        }
         outputView.printReceipt(parseInput, totalCost, promotionDiscount, membershipDiscount);
 
         updateStock(parseInput);
@@ -107,6 +108,40 @@ public class StoreService {
             promotionDiscount += freeItems * promotionProduct.getPrice();
         }
         return promotionDiscount;
+    }
+
+    public int calculateMembershipDiscount(Map<String, Integer> parseInput) {
+        int membershipDiscount = 0;
+        for (Entry<String, Integer> entry : parseInput.entrySet()) {
+            String productName = entry.getKey();
+            int purchaseQuantity = entry.getValue();
+            int freeItems = 0;
+
+            Product promotionProduct = productRepository.findPromotionProductByName(productName);
+
+            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)) {
+                continue;
+            }
+            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+
+            if (promoQuantity == 0) {
+                continue;
+            }
+
+            if (purchaseQuantity >= promotionProduct.getQuantity()) {
+                freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+            }
+            if (purchaseQuantity < promotionProduct.getQuantity()) {
+                freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
+            }
+            if (productService.getBuyPlusGet(promotionProduct) == 3) {
+                membershipDiscount += freeItems * promotionProduct.getPrice() * 3;
+            }
+            if (productService.getBuyPlusGet(promotionProduct) == 2) {
+                membershipDiscount += freeItems * promotionProduct.getPrice() * 2;
+            }
+        }
+        return membershipDiscount;
     }
 
     public void updateStock(Map<String, Integer> parseInput) {
