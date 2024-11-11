@@ -84,7 +84,7 @@ public class InputViewService {
             int totalQuantity = productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
 
             if (promotionProduct.getQuantity() == purchaseQuantity) {
-                if (promoQuantity == 0) {
+                if (promoQuantity == 0 || productService.getFreeItemPercent(promotionProduct, purchaseQuantity) == 0) {
                     continue;
                 }
                 int soldOutItems = purchaseQuantity - promoQuantity;
