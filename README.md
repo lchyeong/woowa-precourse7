@@ -33,7 +33,65 @@
 ```
 └── src
     ├── main
-    │   └── java
+    │   ├── java
+    │   │   └── store
+    │   │       ├── Application.java
+    │   │       ├── config
+    │   │       │   ├── AppConfig.java
+    │   │       │   └── DataInitializer.java
+    │   │       ├── constants
+    │   │       │   └── Delimiter.java
+    │   │       ├── controller
+    │   │       │   └── StoreController.java
+    │   │       ├── entity
+    │   │       │   ├── Product.java
+    │   │       │   └── Promotion.java
+    │   │       ├── exception
+    │   │       │   ├── ApiException.java
+    │   │       │   └── ErrorCode.java
+    │   │       ├── file
+    │   │       │   ├── InternalFile.java
+    │   │       │   └── ResourceFileReader.java
+    │   │       ├── repository
+    │   │       │   ├── ProductRepository.java
+    │   │       │   └── PromotionRepository.java
+    │   │       ├── service
+    │   │       │   ├── InputViewService.java
+    │   │       │   ├── MembershipService.java
+    │   │       │   ├── ProductService.java
+    │   │       │   └── StoreService.java
+    │   │       ├── util
+    │   │       │   ├── DateUtil.java
+    │   │       │   ├── FileUtil.java
+    │   │       │   └── PurchaseProductParser.java
+    │   │       ├── validator
+    │   │       │   ├── DateValidator.java
+    │   │       │   ├── PurchaseValidator.java
+    │   │       │   └── YesNoValidator.java
+    │   │       └── view
+    │   │           ├── InputView.java
+    │   │           ├── InventoryView.java
+    │   │           └── OutputView.java
+    │   └── resources
+    │       ├── products.md
+    │       └── promotions.md
+    └── test
+        └── java
+            └── store
+                ├── ApplicationTest.java
+                ├── config
+                │   └── DataInitializerTest.java
+                ├── file
+                │   ├── FileUtilTest.java
+                │   └── ResourceFileReaderTest.java
+                ├── product
+                │   └── repository
+                │       └── ProductRepositoryTest.java
+                ├── validator
+                │   └── PurchaseValidatorTest.java
+                └── view
+                    └── InventoryViewTest.java
+
     
 ├──README.md
 ├──build.gradle
@@ -166,8 +224,10 @@ N
     - 멤버십 회원은 `프로모션 미적용 금액`의 30%를 할인받을 수 있습니다.
     - 프로모션 적용 후 남은 금액에 대해 멤버십 할인이 적용됩니다.
     - 멤버십 할인의 최대 한도는 `8,000원`입니다.
-  
-### 당첨/보너스 번호 입력 및 검증
+
+### 프로모션 적용
+
+- **
 
 &nbsp;
 
@@ -177,18 +237,33 @@ N
 
 ⚠️ 아래 코드표는 지속적으로 업데이트 될 예정입니다!
 
-```
-C0001 [ERROR]재고를 확인하고 상품명을 정확히 입력해주세요.
-C0002 [ERROR]
-```
+| Code | Message                                  |
+|------|------------------------------------------|
+| I001 | [ERROR] 파일이 비었습니다.                       |
+| I002 | [ERROR] 리소스를 찾을 수 없습니다.                  |
+| I003 | [ERROR] 수량을 확인해주세요                       |
+| I004 | [ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요. |
+| I004 | [ERROR] 숫자를 입력해주세요.                      |
+| I005 | [ERROR] 잘못된 입력입니다.                       |
+| I006 | [ERROR] 날짜 형식이 맞지 않습니다.                  |
+| I007 | [ERROR] 입력이 비었습니다. 다시 확인해주세요.            |
+| I008 | [ERROR] 다시 처음으로( 이건 미출력)                 |
+| I009 | [ERROR] 잘못된 입력입니다. 다시 입력해 주세요.           |
+
+| Code | Message                                     |
+|------|---------------------------------------------|
+| P001 | [ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.          |
+| P002 | [ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요. |
+| P003 | [ERROR] 현재 진행중인 프로모션이 없습니다.                 |
+| P004 | [ERROR] 프로모션 이름을 찾을 수 없습니다.                 |
 
 다음과 같은 경우 **예외**가 발생할 수 있습니다!
 
 ### **구매할 상품과 수량 형식이 올바르지 않은 경우**
 
-- 상품 명이 일치하지 않는 경우: C001([ERROR] 재고를 확인하고 상품명을 정확히 입력해주세요.
-- 공백 및 빈값 입력: C002([ERROR] 재고를 확인하고 상품명을 정확히 입력해주세요.
-- 수량이 숫자가 아닌 경우: C003([ERROR] 재고를 확인하고 상품명을 정확히 입력해주세요.
+- 상품 명이 일치하지 않는 경우
+- 공백 및 빈값 입력
+- 수량이 숫자가 아닌 경우
 - 수량이 0이거나 음수인 경우:
 - 수량이 재고 수량보다 많은 경우:
 - [상품-수량]의 형식이 아닌 경우:
