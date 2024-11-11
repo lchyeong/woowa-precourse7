@@ -53,7 +53,7 @@ public class OutputView {
                 continue;
             }
 
-            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+            int promoQuantity = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
 
             if (promoQuantity == 0) {
                 continue;
