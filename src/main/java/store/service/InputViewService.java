@@ -75,51 +75,64 @@ public class InputViewService {
             int purchaseQuantity = entry.getValue();
 
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
-            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)
-                    || promotionProduct.getPromotion() == null) {
+            if (!isValidPromotionProduct(promotionProduct)) {
                 continue;
             }
 
-            int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
-            int totalQuantity = productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
+            handleExactQuantityPromotion(parseInput, productName, purchaseQuantity, promotionProduct);
+            handleOverQuantityPromotion(parseInput, productName, purchaseQuantity, promotionProduct);
+            handleUnderQuantityPromotion(parseInput, productName, purchaseQuantity, promotionProduct);
+        }
+        return parseInput;
+    }
 
-            if (promotionProduct.getQuantity() == purchaseQuantity) {
-                if (promoQuantity == 0 || productService.getFreeItemPercent(promotionProduct, purchaseQuantity) == 0) {
-                    continue;
-                }
-                int soldOutItems = purchaseQuantity - promoQuantity;
-                input = validateFreeItemSoldOut(productName, soldOutItems);
-                if (input.equals("N") || input.equals("n")) {
-                    parseInput.remove(productName);
-                    return parseInput;
-                }
+    private boolean isValidPromotionProduct(Product promotionProduct) {
+        return promotionProduct != null
+                && DateValidator.checkPromotionDate(promotionProduct)
+                && promotionProduct.getPromotion() != null;
+    }
+
+    private void handleExactQuantityPromotion(Map<String, Integer> parseInput, String productName, int purchaseQuantity,
+                                              Product promotionProduct) {
+        int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+
+        if (promotionProduct.getQuantity() == purchaseQuantity) {
+            if (promoQuantity == 0 || productService.getFreeItemPercent(promotionProduct, purchaseQuantity) == 0) {
+                return;
             }
-
-            if (promotionProduct.getQuantity() > purchaseQuantity) {
-                if (purchaseQuantity - totalQuantity == promotionProduct.getPromotion().getBuy()) {
-                    input = validateFreeItem(productName, promotionProduct.getPromotion().getGet());
-                    if (input.equals("Y") || input.equals("y")) {
-                        parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
-                    }
-                    if (input.equals("N") || input.equals("n")) {
-                        continue;
-                    }
-                }
+            int soldOutItems = purchaseQuantity - promoQuantity;
+            input = validateFreeItemSoldOut(productName, soldOutItems);
+            if (input.equals("N") || input.equals("n")) {
+                parseInput.remove(productName);
             }
+        }
+    }
 
-            if (promotionProduct.getQuantity() < purchaseQuantity) {
-                if (promoQuantity == 0) {
-                    continue;
-                }
-                int soldOutItems = purchaseQuantity - promoQuantity;
-                input = validateFreeItemSoldOut(productName, soldOutItems);
-                if (input.equals("N") || input.equals("n")) {
-                    parseInput.remove(productName);
-                    return parseInput;
+    private void handleOverQuantityPromotion(Map<String, Integer> parseInput, String productName, int purchaseQuantity,
+                                             Product promotionProduct) {
+        int totalQuantity = productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
+
+        if (promotionProduct.getQuantity() > purchaseQuantity) {
+            if (purchaseQuantity - totalQuantity == promotionProduct.getPromotion().getBuy()) {
+                input = validateFreeItem(productName, promotionProduct.getPromotion().getGet());
+                if (input.equals("Y") || input.equals("y")) {
+                    parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
                 }
             }
         }
-        return parseInput;
+    }
+
+    private void handleUnderQuantityPromotion(Map<String, Integer> parseInput, String productName, int purchaseQuantity,
+                                              Product promotionProduct) {
+        int promoQuantity = productService.totalPurchaseItems(promotionProduct, promotionProduct.getQuantity());
+
+        if (promotionProduct.getQuantity() < purchaseQuantity && promoQuantity != 0) {
+            int soldOutItems = purchaseQuantity - promoQuantity;
+            input = validateFreeItemSoldOut(productName, soldOutItems);
+            if (input.equals("N") || input.equals("n")) {
+                parseInput.remove(productName);
+            }
+        }
     }
 
     private String validateFreeItem(String productName, int freeItemQuantity) {
