@@ -34,7 +34,7 @@ public class PurchaseValidator {
 
     public boolean checkPurchaseProductNameAndAmount(String input) {
         List<String> items = Delimiter.COMMA.splitDelimiter(removeSpace(input));
-        Set<String> productNameSet = new HashSet<>(); // 제품 이름 중복 확인용 Set
+        Set<String> productNameSet = new HashSet<>();
 
         for (String item : items) {
             Matcher oneMatcher = PurchaseValidator.ONE_PURCHASE_PATTERN.matcher(item);

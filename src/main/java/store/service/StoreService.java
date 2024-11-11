@@ -83,52 +83,6 @@ public class StoreService {
         return totalCost;
     }
 
-    public int calculateMemberShipCost(Map<String, Integer> parseInput) {
-        int nonPromotionCost = 0;
-
-        for (Entry<String, Integer> entry : parseInput.entrySet()) {
-            String productName = entry.getKey();
-            int purchaseQuantity = entry.getValue();
-
-            Product product = productRepository.findProductByName(productName);
-            Product promotionProduct = productRepository.findPromotionProductByName(productName);
-
-            if (promotionProduct != null) {
-                if (purchaseQuantity > promotionProduct.getQuantity()
-                        && productService.getFreeItems(promotionProduct, promotionProduct.getQuantity()) == 0) {
-                    nonPromotionCost += product.getPrice() * purchaseQuantity;
-                    continue;
-                }
-
-                if ((purchaseQuantity > promotionProduct.getQuantity()
-                        && productService.getFreeItems(promotionProduct, promotionProduct.getQuantity()) >= 1)) {
-                    continue;
-                }
-//                   if (productService.getFreeItems(promotionProduct, promotionProduct.getQuantity()) == 0) {
-//                        nonPromotionCost += product.getPrice() * purchaseQuantity;
-//                        continue;
-//                    }
-//                    nonPromotionCost += productService.getNonPromotionItemsCost(promotionProduct, purchaseQuantity);
-//                }
-//                if (purchaseQuantity < promotionProduct.getQuantity()
-//                        || purchaseQuantity == promotionProduct.getQuantity()) {
-//                    continue;
-//                }
-            }
-
-            if (promotionProduct == null) {
-                nonPromotionCost +=
-                        product.getPrice() * purchaseQuantity;
-                continue;
-            }
-            nonPromotionCost +=
-                    product.getPrice() * productService.totalPurchaseItems(promotionProduct, purchaseQuantity);
-
-        }
-        return membershipService.calculateMembershipDiscount(nonPromotionCost);
-    }
-
-
     public int calculatePromotionDiscount(Map<String, Integer> parseInput) {
         int promotionDiscount = 0;
         for (Entry<String, Integer> entry : parseInput.entrySet()) {
