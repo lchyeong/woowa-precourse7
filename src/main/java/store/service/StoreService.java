@@ -3,7 +3,6 @@ package store.service;
 import java.util.Map;
 import java.util.Map.Entry;
 import store.entity.Product;
-import store.exception.ApiException;
 import store.repository.ProductRepository;
 import store.util.PurchaseProductParser;
 import store.validator.DateValidator;
@@ -43,9 +42,9 @@ public class StoreService {
         String input = inputViewService.purchaseProduct();
         Map<String, Integer> parseInput = purchaseProductParser.parsePurchaseInput(input);
 
-        try {
-            parseInput = inputViewService.checkPromotion(parseInput);
-        } catch (ApiException e) {
+        parseInput = inputViewService.checkPromotion(parseInput);
+        if (parseInput.isEmpty()) {
+            return;
         }
 
         int totalCost = calculateTotalCost(parseInput);
