@@ -15,15 +15,17 @@ public class InputViewService {
     private final ProductRepository productRepository;
     private final YesNoValidator yesNoValidator;
     private final ProductService productService;
+    private final StoreService storeService;
     private boolean pass;
     private String input;
 
     public InputViewService(PurchaseValidator purchaseValidator, ProductRepository productRepository,
-                            YesNoValidator yesNoValidator, ProductService productService) {
+                            YesNoValidator yesNoValidator, ProductService productService, StoreService storeService) {
         this.purchaseValidator = purchaseValidator;
         this.productRepository = productRepository;
         this.yesNoValidator = yesNoValidator;
         this.productService = productService;
+        this.storeService = storeService;
     }
 
     public String purchaseProduct() {
@@ -86,12 +88,15 @@ public class InputViewService {
             if (promotionProduct.getQuantity() == purchaseQuantity) {
                 continue;
             }
-            //이때 수량 재세팅해야함
+
             if (promotionProduct.getQuantity() > purchaseQuantity) {
                 if (purchaseQuantity - totalQuantity == promotionProduct.getPromotion().getBuy()) {
                     input = validateFreeItem(productName, promotionProduct.getPromotion().getGet());
                     if (input.equals("Y") || input.equals("y")) {
                         parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
+                    }
+                    if (input.equals("N") || input.equals("n")) {
+                        storeService.welcome();
                     }
                 }
             }
