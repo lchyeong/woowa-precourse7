@@ -97,7 +97,7 @@ public class StoreService {
                 continue;
             }
 
-            if (purchaseQuantity > promotionProduct.getQuantity()) {
+            if (purchaseQuantity >= promotionProduct.getQuantity()) {
                 freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
             }
             if (purchaseQuantity < promotionProduct.getQuantity()) {
