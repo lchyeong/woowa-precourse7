@@ -46,7 +46,6 @@ public class StoreService {
         try {
             parseInput = inputViewService.checkPromotion(parseInput);
         } catch (ApiException e) {
-            return;
         }
 
         int totalCost = calculateTotalCost(parseInput);
