@@ -130,15 +130,27 @@ public class StoreService {
 
             if (purchaseQuantity >= promotionProduct.getQuantity()) {
                 freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+
+                if (productService.getBuyPlusGet(promotionProduct) == 3) {
+                    membershipDiscount += freeItems * promotionProduct.getPrice() * 3;
+                    continue;
+                }
+                if (productService.getBuyPlusGet(promotionProduct) == 2) {
+                    membershipDiscount += freeItems * promotionProduct.getPrice() * 2;
+                    continue;
+                }
             }
             if (purchaseQuantity < promotionProduct.getQuantity()) {
                 freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
-            }
-            if (productService.getBuyPlusGet(promotionProduct) == 3) {
-                membershipDiscount += freeItems * promotionProduct.getPrice() * 3;
-            }
-            if (productService.getBuyPlusGet(promotionProduct) == 2) {
-                membershipDiscount += freeItems * promotionProduct.getPrice() * 2;
+
+                if (productService.getBuyPlusGet(promotionProduct) == 3) {
+                    membershipDiscount += freeItems * promotionProduct.getPrice() * 3;
+                    continue;
+                }
+                if (productService.getBuyPlusGet(promotionProduct) == 2) {
+                    membershipDiscount += freeItems * promotionProduct.getPrice() * 2;
+                    continue;
+                }
             }
         }
         return membershipDiscount;
