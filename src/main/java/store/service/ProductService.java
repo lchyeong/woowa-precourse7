@@ -10,61 +10,45 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public int calculateNoPromotionProduct(Product product, int purchaseQuantity) {
-        return product.getQuantity() - purchaseQuantity;
+    public void getRemainQuantityAfterPromotion(String productName, int purchaseQuantity) {
+        int remainQuantity = handlePromotionStock(productName, purchaseQuantity);
+        handleRegularStock(productName, remainQuantity);
     }
+    
+    public int handlePromotionStock(String productName, int purchaseQuantity) {
+        int remainQuantity = purchaseQuantity;
 
-    private int getRemainQuantityAfterPromotion(Product promotionProduct, int purchaseQuantity) {
-        int promotionCount = getPromotionCount(promotionProduct, purchaseQuantity);
+        Product promotionProduct = productRepository.findPromotionProductByName(productName);
+        if (promotionProduct != null && promotionProduct.getQuantity() > 0) {
+            int availablePromotionStock = Math.min(promotionProduct.getQuantity(), purchaseQuantity);
+            remainQuantity -= availablePromotionStock;
 
-        if (promotionCount == 0) {
-            return purchaseQuantity;
+            promotionProduct.decreaseQuantity(availablePromotionStock);
         }
 
-        int totalPromotionQuantity = getPromotionQuantity(promotionProduct, purchaseQuantity);
-        int remainingQuantity = purchaseQuantity - totalPromotionQuantity;
-
-        if (remainingQuantity < 0) {
-            remainingQuantity = 0;
-        }
-        return remainingQuantity;
+        return remainQuantity;
     }
 
-    public int getPromotionQuantity(Product promotionProduct, int purchaseQuantity) {
+    public void handleRegularStock(String productName, int remainQuantity) {
+        if (remainQuantity > 0) {
+            Product regularProduct = productRepository.findProductByName(productName);
+            regularProduct.decreaseQuantity(remainQuantity);
+        }
+    }
+
+    public int getFreeItems(Product promotionProduct, int purchaseQuantity) {
         int buy = promotionProduct.getPromotion().getBuy();
         int get = promotionProduct.getPromotion().getGet();
 
-        return (buy + get) * getPromotionCount(promotionProduct, purchaseQuantity);
-    }
-
-    public int getPromotionCount(Product promotionProduct, int purchaseQuantity) {
-        int buy = promotionProduct.getPromotion().getBuy();
-        int get = promotionProduct.getPromotion().getGet();
-
-        if ((purchaseQuantity / (buy + get)) <= 0) {
-            return 0;
-        }
         return purchaseQuantity / (buy + get);
     }
 
-    public int getAdditionalFreeItems(Product promotionProduct, int purchaseQuantity) {
-        if (promotionProduct == null) {
-            return 0;
-        }
-        int buy = promotionProduct.getPromotion().getBuy();
-        int get = promotionProduct.getPromotion().getGet();
+    public int getRealPurchaseItems(Product promotionProduct, int purchaseQuantity) {
+        return promotionProduct.getPromotion().getBuy() * getFreeItems(promotionProduct, purchaseQuantity);
+    }
 
-        if (purchaseQuantity % (buy + get) == 0 && (promotionProduct.getQuantity() >= purchaseQuantity)) {
-            return (purchaseQuantity / (buy + get)) * get;
-        }
-
-        if (purchaseQuantity % (buy + get) == buy && (promotionProduct.getQuantity() >= purchaseQuantity)) {
-            return get;
-        }
-
-        if (promotionProduct.getQuantity() < purchaseQuantity) {
-            return purchaseQuantity - ((purchaseQuantity / (buy + get)) * (buy + get));
-        }
-        return 0;
+    public int totalPurchaseItems(Product promotionProduct, int purchaseQuantity) {
+        return getFreeItems(promotionProduct, purchaseQuantity) + getRealPurchaseItems(promotionProduct,
+                purchaseQuantity);
     }
 }

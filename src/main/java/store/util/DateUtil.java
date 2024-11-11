@@ -17,7 +17,6 @@ public class DateUtil {
 
             return date.atStartOfDay();
         } catch (DateTimeParseException e) {
-            System.out.println(input);
             throw new ApiException(ErrorCode.INVALID_DATE_FORMAT);
         }
     }
