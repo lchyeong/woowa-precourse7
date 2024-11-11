@@ -56,6 +56,9 @@ public class StoreService {
             membershipDiscount = membershipService.calculateMembershipDiscount(
                     totalCost - calculateMembershipDiscount(parseInput));
         }
+        if (input.equals("N") || input.equals("n")) {
+            membershipDiscount = 0;
+        }
         outputView.printReceipt(parseInput, totalCost, promotionDiscount, membershipDiscount);
 
         updateStock(parseInput);
