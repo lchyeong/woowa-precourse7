@@ -10,6 +10,7 @@ public enum ErrorCode {
     INVALID_DATE_FORMAT("I006", "[ERROR] 날짜 형식이 맞지 않습니다."),
     EMPTY_INPUT("I007", "[ERROR] 입력이 비었습니다. 다시 확인해주세요."),
     REJECT_PROMOTION("I008", "[ERROR] 다시 처음으로( 이건 미출력)"),
+    DUPLICATE_PRODUCT_NAME("I009", "[ERROR] 이름이 중복입니다. 다시 입력해주세요."),
 
     NOT_FOUND_PRODUCT_NAME("P001", "[ERROR] 제품 이름을 찾을 수 없습니다."),
     LACK_OF_QUANTITY("P002", "[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요."),

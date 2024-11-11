@@ -1,6 +1,8 @@
 package store.validator;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import store.constants.Delimiter;
@@ -32,6 +34,7 @@ public class PurchaseValidator {
 
     public boolean checkPurchaseProductNameAndAmount(String input) {
         List<String> items = Delimiter.COMMA.splitDelimiter(removeSpace(input));
+        Set<String> productNameSet = new HashSet<>(); // 제품 이름 중복 확인용 Set
 
         for (String item : items) {
             Matcher oneMatcher = PurchaseValidator.ONE_PURCHASE_PATTERN.matcher(item);
@@ -39,6 +42,10 @@ public class PurchaseValidator {
             if (oneMatcher.matches()) {
                 String productName = oneMatcher.group(1);
                 int quantity = extractNumber(oneMatcher.group(2));
+
+                if (!productNameSet.add(productName)) {
+                    throw new ApiException(ErrorCode.DUPLICATE_PRODUCT_NAME);
+                }
 
                 if (!checkProductName(productName)) {
                     throw new ApiException(ErrorCode.NOT_FOUND_PRODUCT_NAME);
