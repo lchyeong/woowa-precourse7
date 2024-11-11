@@ -3,6 +3,7 @@ package store.service;
 import java.util.Map;
 import store.entity.Product;
 import store.exception.ApiException;
+import store.exception.ErrorCode;
 import store.repository.ProductRepository;
 import store.validator.DateValidator;
 import store.validator.PurchaseValidator;
@@ -15,17 +16,15 @@ public class InputViewService {
     private final ProductRepository productRepository;
     private final YesNoValidator yesNoValidator;
     private final ProductService productService;
-    private final StoreService storeService;
     private boolean pass;
     private String input;
 
     public InputViewService(PurchaseValidator purchaseValidator, ProductRepository productRepository,
-                            YesNoValidator yesNoValidator, ProductService productService, StoreService storeService) {
+                            YesNoValidator yesNoValidator, ProductService productService) {
         this.purchaseValidator = purchaseValidator;
         this.productRepository = productRepository;
         this.yesNoValidator = yesNoValidator;
         this.productService = productService;
-        this.storeService = storeService;
     }
 
     public String purchaseProduct() {
@@ -96,13 +95,19 @@ public class InputViewService {
                         parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
                     }
                     if (input.equals("N") || input.equals("n")) {
-                        storeService.welcome();
+                        throw new ApiException(ErrorCode.REJECT_PROMOTION);
                     }
                 }
             }
             if (promotionProduct.getQuantity() < purchaseQuantity) {
+                if (promoQuantity == 0) {
+                    continue;
+                }
                 int soldOutItems = purchaseQuantity - promoQuantity;
                 input = validateFreeItemSoldOut(productName, soldOutItems);
+                if (input.equals("N") || input.equals("n")) {
+                    throw new ApiException(ErrorCode.REJECT_PROMOTION);
+                }
             }
         }
         return parseInput;
