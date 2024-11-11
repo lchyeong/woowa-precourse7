@@ -95,7 +95,7 @@ public class InputViewService {
                         parseInput.put(productName, purchaseQuantity + promotionProduct.getPromotion().getGet());
                     }
                     if (input.equals("N") || input.equals("n")) {
-                        throw new ApiException(ErrorCode.REJECT_PROMOTION);
+                        continue;
                     }
                 }
             }
