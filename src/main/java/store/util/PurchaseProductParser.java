@@ -1,6 +1,6 @@
 package store.util;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -12,7 +12,7 @@ import store.validator.PurchaseValidator;
 public class PurchaseProductParser {
 
     public Map<String, Integer> parsePurchaseInput(String input) {
-        Map<String, Integer> result = new HashMap<>();
+        Map<String, Integer> result = new LinkedHashMap<>();
         List<String> items = Delimiter.COMMA.splitDelimiter(removeSpace(input));
 
         for (String item : items) {
