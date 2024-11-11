@@ -56,7 +56,7 @@ public class StoreService {
         input = inputViewService.applyMembershipDiscount();
 
         if (input.equals("Y") || input.equals("y")) {
-            membershipDiscount = membershipService.calculateMembershipDiscount(totalCost);
+            membershipDiscount = calculateMemberShipCost(parseInput);
         }
 
         outputView.printReceipt(parseInput, totalCost, promotionDiscount, membershipDiscount);
@@ -82,6 +82,24 @@ public class StoreService {
         }
         return totalCost;
     }
+
+    public int calculateMemberShipCost(Map<String, Integer> parseInput) {
+        int nonPromotionTotal = 0;
+
+        for (Entry<String, Integer> entry : parseInput.entrySet()) {
+            String productName = entry.getKey();
+            int purchaseQuantity = entry.getValue();
+
+            Product product = productRepository.findProductByName(productName);
+            Product promotionProduct = productRepository.findPromotionProductByName(productName);
+
+            if (promotionProduct == null || !DateValidator.checkPromotionDate(promotionProduct)) {
+                nonPromotionTotal += product.getPrice() * purchaseQuantity;
+            }
+        }
+        return membershipService.calculateMembershipDiscount(nonPromotionTotal);
+    }
+
 
     public int calculatePromotionDiscount(Map<String, Integer> parseInput) {
         int promotionDiscount = 0;
