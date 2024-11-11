@@ -88,7 +88,7 @@ public class StoreService {
                 continue;
             }
 
-            int freeItems = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+            int freeItems = productService.getFreeItems(promotionProduct, purchaseQuantity);
 
             promotionDiscount += freeItems * promotionProduct.getPrice();
         }

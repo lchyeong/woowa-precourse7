@@ -69,7 +69,6 @@ public class InputViewService {
         return input;
     }
 
-    //todo 리펙토링 필요 ㅠㅠ....
     public Map<String, Integer> checkPromotion(Map<String, Integer> parseInput) {
         for (Map.Entry<String, Integer> entry : parseInput.entrySet()) {
             String productName = entry.getKey();

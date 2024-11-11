@@ -50,7 +50,7 @@ public class OutputView {
             Product promotionProduct = productRepository.findPromotionProductByName(productName);
 
             if (promotionProduct != null) {
-                int freeItemQuantity = productService.getFreeItems(promotionProduct, promotionProduct.getQuantity());
+                int freeItemQuantity = productService.getFreeItems(promotionProduct, purchaseQuantity);
                 if (freeItemQuantity > 0) {
                     System.out.printf("%s\t\t%d%n", productName, freeItemQuantity);
                 }
