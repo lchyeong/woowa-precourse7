@@ -27,6 +27,6 @@ public class InventoryView {
         if (quantity == 0) {
             return "재고 없음";
         }
-        return String.valueOf(quantity) + "개";
+        return quantity + "개";
     }
 }

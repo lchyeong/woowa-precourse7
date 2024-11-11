@@ -8,7 +8,7 @@ public enum ErrorCode {
     NOT_NUMBER("I004", "[ERROR] 숫자를 입력해주세요."),
     INVALID_FORM("I005", "[ERROR] 잘못된 입력입니다. 다시 입력해 주세요."),
     INVALID_DATE_FORMAT("I006", "[ERROR] 날짜 형식이 맞지 않습니다."),
-    EMPTY_INPUT("I007", "[ERROR] 입력이 비었습니다. 다시 확인해주세요."),
+    EMPTY_INPUT("I007", "[ERROR] 올바르지 않은 형식으로 입력헀습니다. 다시 입력해 주세요."),
     REJECT_PROMOTION("I008", "[ERROR] 다시 처음으로( 이건 미출력)"),
     DUPLICATE_PRODUCT_NAME("I009", "[ERROR] 잘못된 입력입니다. 다시 입력해 주세요."),
 
